@@ -8,4 +8,5 @@
 5. 重新打开渣雷，准备好纸
 
 原理见http://www.pc426.com/thread-69113-1-1.html，我只是改了个数字。
+
 使用python和pyqt4。有问题或者建议提issue。
