@@ -32,6 +32,14 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
+def encode_item(item):
+    if isinstance(item, buffer):
+        return str(item)
+    elif isinstance(item, unicode):
+        return item.encode('utf-8', 'ignore')
+    raise ValueError("encode failed. %r" % item)
+
+
 class Window(QtGui.QDialog):
     def __init__(self, parent=None):
         super(Window, self).__init__(parent)
@@ -176,7 +184,7 @@ class Window(QtGui.QDialog):
                 if task is None:
                     continue
                 taskname = task[0]
-                result = json.loads(str(item[1]))['Result']
+                result = json.loads(encode_item(item[1]))['Result']
                 if taskid not in self.task_list or result != 0:
                     self.task_list[taskid] = (taskname, result)
             conn.close()
@@ -215,7 +223,7 @@ class Window(QtGui.QDialog):
                         u'SELECT UserData,LocalSubFileIndex FROM %s '
                         'WHERE LocalTaskId = %d' % (tablename, k)):
                     c2 = conn.cursor()
-                    jsondata = json.loads(str(item[0]))
+                    jsondata = json.loads(encode_item(item[0]))
                     jsondata['Result'] = 0
                     buf = buffer(json.dumps(jsondata))
                     query = (u"UPDATE %s SET UserData = (?) "
